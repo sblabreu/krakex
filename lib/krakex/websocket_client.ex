@@ -3,15 +3,17 @@ defmodule Krakex.WebSocketClient do
 
   @url "wss://ws.kraken.com"
 
-  def start_link(product_ids \\ []) do
-    WebSockex.start_link(@url, __MODULE__, :no_state)
+  def start_link(products \\ []) do
+    {:ok, pid} = WebSockex.start_link(@url, __MODULE__, :no_state)
+    subscribe(pid, products)
+    {:ok, pid}
   end
 
-  def subscribe(pid, products) do
-    WebSockex.send_frame(pid, subscribtion_frame(products))
+  def handle_connect(_conn, state) do
+    {:ok, state}
   end
 
-  def handle_connect(conn, state) do
+  def handle_disconnect(_conn, state) do
     {:ok, state}
   end
 
@@ -27,5 +29,27 @@ defmodule Krakex.WebSocketClient do
     end
 
     {:ok, state}
+  end
+
+  def subscribe(pid, pairs) do
+    frame = subscription_frame(pairs)
+    WebSockex.send_frame(pid, frame)
+  end
+
+  def unsubscribe(pid, pairs) do
+    frame = subscription_frame(pairs)
+    WebSockex.send_frame(pid, frame)
+  end
+
+  defp subscription_frame(pairs) do
+    payload = %{
+      event: "subscribe",
+      pair: pairs,
+      subscription: %{
+        name: "ticker"
+      }
+    }
+
+    {:text, Jason.encode!(payload)}
   end
 end
