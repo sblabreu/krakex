@@ -113,10 +113,10 @@ defmodule Krakex.API do
     System.system_time() |> to_string()
   end
 
-  defp signature(path, nonce, form_data, secret) do
+  defp signature(_path, nonce, form_data, secret) do
     params = URI.encode_query(form_data)
     sha_sum = :crypto.hash(:sha256, nonce <> params)
-    mac_sum = :crypto.hmac(:sha512, secret, path <> sha_sum)
+    mac_sum = :crypto.hmac(:sha512, secret, sha_sum)
     Base.encode64(mac_sum)
   end
 
