@@ -18,7 +18,7 @@ defmodule Krakex.HTTPClient do
           response
   def post(url, form_data, headers, client \\ @client)
       when is_binary(url) and is_list(form_data) and is_list(headers) do
-    response = client.post(url, {:form, form_data}, headers ++ @post_headers)
+    response = client.post(url, {:form, form_data}, headers ++ @post_headers, ssl: [versions: [:"tlsv1.2"]])
     handle_response(response)
   end
 
